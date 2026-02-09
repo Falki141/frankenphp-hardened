@@ -29,6 +29,7 @@ RUN adduser --disabled-password frankenphp \
 FROM scratch
 WORKDIR /app
 COPY --from=builder /etc/passwd /etc/group /etc/
+COPY --from=builder /etc/ssl /etc/
 COPY --from=builder /etc/localtime /etc/localtime
 COPY --from=builder /etc/os-release /etc/os-release
 COPY --from=builder /usr/share/zoneinfo/ /usr/share/zoneinfo/
