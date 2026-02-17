@@ -40,6 +40,7 @@ COPY --from=builder --chown=frankenphp:frankenphp /usr/local/lib/php/extensions 
 COPY --from=builder /tmp/libs /usr/lib
 #
 COPY --from=builder /lib/ld-linux-* /lib/
+COPY --from=builder /lib64/ld-linux-* /lib64/
 COPY --from=builder /usr/local/etc/php/conf.d /usr/local/etc/php/conf.d
 COPY --from=builder /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
 COPY --from=builder --chown=frankenphp:frankenphp /data/caddy /data/caddy
