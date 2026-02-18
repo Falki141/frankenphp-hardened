@@ -26,7 +26,8 @@ RUN adduser --disabled-password frankenphp \
     && rm /root/clean.sh
 
 # final stage
-FROM scratch
+FROM gcr.io/distroless/base-debian13
+
 WORKDIR /app
 COPY --from=builder /etc/passwd /etc/group /etc/
 COPY --from=builder /etc/ssl/ /etc/ssl/
@@ -35,22 +36,22 @@ COPY --from=builder /etc/os-release /etc/os-release
 COPY --from=builder /usr/share/zoneinfo/ /usr/share/zoneinfo/
 
 # get FrankenPHP and PHP  binary from builder image
-COPY --from=builder --chown=frankenphp:frankenphp  /usr/local/bin/frankenphp /usr/local/bin/frankenphp
-COPY --from=builder --chown=frankenphp:frankenphp /usr/local/lib/php/extensions /usr/local/lib/php/extensions
+COPY --from=builder --chown=www-data:www-data  /usr/local/bin/frankenphp /usr/local/bin/frankenphp
+COPY --from=builder --chown=www-data:www-data /usr/local/lib/php/extensions /usr/local/lib/php/extensions
 COPY --from=builder /tmp/libs /usr/lib
-#
-COPY --from=builder /lib/ld-linux-* /lib/
-COPY --from=builder /lib64/ld-linux-* /lib64/
+
+# add linux libraries for php and caddy
 COPY --from=builder /usr/local/etc/php/conf.d /usr/local/etc/php/conf.d
 COPY --from=builder /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
-COPY --from=builder --chown=frankenphp:frankenphp /data/caddy /data/caddy
-COPY --from=builder --chown=frankenphp:frankenphp /config/caddy /config/caddy
+COPY --from=builder --chown=www-data:www-data /data/caddy /data/caddy
+COPY --from=builder --chown=www-data:www-data /config/caddy /config/caddy
+COPY --from=builder --chown=www-data:www-data /var/www /var/www
 
 # switch to frankenphp user
-USER frankenphp:frankenphp
+USER www-data:www-data
 
 # copy application files and Caddyfile
-COPY --from=builder --chown=frankenphp:frankenphp /app /app
-COPY --from=builder --chown=frankenphp:frankenphp /home/frankenphp/ /home/frankenphp/
-COPY --chown=frankenphp:frankenphp Caddyfile /etc/caddy/Caddyfile
+COPY --from=builder --chown=www-data:www-data /app /app
+COPY --from=builder --chown=www-data:www-data /home/frankenphp/ /home/frankenphp/
+COPY --chown=www-data:www-data ./config/Caddyfile /etc/caddy/Caddyfile
 ENTRYPOINT [ "frankenphp", "run", "--config", "/etc/caddy/Caddyfile" ]
