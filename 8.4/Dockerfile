@@ -53,5 +53,5 @@ USER www-data:www-data
 # copy application files and Caddyfile
 COPY --from=builder --chown=www-data:www-data /app /app
 COPY --from=builder --chown=www-data:www-data /home/frankenphp/ /home/frankenphp/
-COPY --chown=www-data:www-data ./config/Caddyfile /etc/caddy/Caddyfile
+COPY --chown=www-data:www-data Caddyfile /etc/caddy/Caddyfile
 ENTRYPOINT [ "frankenphp", "run", "--config", "/etc/caddy/Caddyfile" ]
