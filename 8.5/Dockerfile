@@ -26,7 +26,7 @@ RUN adduser --disabled-password frankenphp \
     && rm /root/clean.sh
 
 # final stage
-FROM gcr.io/distroless/base-debian13
+FROM gcr.io/distroless/static-debian13
 
 WORKDIR /app
 COPY --from=builder /etc/passwd /etc/group /etc/
