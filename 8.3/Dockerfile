@@ -21,6 +21,8 @@ RUN adduser --disabled-password frankenphp \
     simplexml \
     sockets \
     zip \
+    mbstring \
+    iconv \
     && pecl install redis \
     && sh /root/clean.sh \
     && rm /root/clean.sh
