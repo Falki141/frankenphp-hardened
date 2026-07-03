@@ -1,0 +1,37 @@
+{
+    # turn off admin API endpoint
+    admin off
+    auto_https off
+    http_port 8080
+
+	frankenphp {
+    		php_ini expose_php off
+    	}
+}
+
+# The domain name of your server
+:8080 {
+    # disable the default Caddy
+    header -Server
+    # Set the webroot to the public/ directory
+    root /app/public
+    # Enable compression (optional)
+    encode zstd br gzip
+
+    # Health check route without logging
+    @health path /health-check
+    handle @health {
+        respond "OK" 200
+        log_skip
+    }
+
+    # Execute PHP files from the public/ directory and serve assets
+    php_server {
+        try_files {path} index.php
+    }
+
+    log {
+        output stdout
+        format json
+    }
+}
